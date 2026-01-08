@@ -8,6 +8,15 @@ import { createPromiseClient, Interceptor } from "@connectrpc/connect"
 import { createConnectTransport } from "@connectrpc/connect-node"
 import { InsightService } from "@buf/safedep_api.connectrpc_es/safedep/services/insights/v2/insights_connect.js"
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb.js"
+import * as https from "https"
+import * as dns from "dns"
+
+// Force Node.js runtime (required for gRPC/ConnectRPC)
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+
+// Set DNS to IPv4 first (Windows compatibility)
+dns.setDefaultResultOrder("ipv4first")
 
 const SAFEDEP_API_KEY = process.env.SAFEDEP_API_KEY
 const SAFEDEP_TENANT_ID = process.env.SAFEDEP_TENANT_ID
@@ -27,7 +36,7 @@ function authenticationInterceptor(token: string, tenant: string): Interceptor {
   }
 }
 
-// Create gRPC transport with authentication
+// Create gRPC transport with authentication and custom HTTPS agent
 const transport =
   SAFEDEP_API_KEY && SAFEDEP_TENANT_ID
     ? createConnectTransport({
@@ -36,6 +45,13 @@ const transport =
         interceptors: [
           authenticationInterceptor(SAFEDEP_API_KEY, SAFEDEP_TENANT_ID),
         ],
+        // Custom Node.js HTTPS agent with keepAlive and DNS options
+        nodeOptions: {
+          agent: new https.Agent({
+            keepAlive: true,
+            family: 4, // Force IPv4
+          }),
+        },
       })
     : null
 

@@ -20,29 +20,17 @@ export default function ContentTabs({
 }: ContentTabsProps) {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList className="border-b border-slate-200 bg-white">
-        <TabsTrigger
-          value="overview"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-600"
-        >
+      <TabsList>
+        <TabsTrigger value="overview" className="rounded-md">
           Overview
         </TabsTrigger>
-        <TabsTrigger
-          value="vulnerabilities"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-600"
-        >
+        <TabsTrigger value="vulnerabilities" className="rounded-md">
           Vulnerabilities
         </TabsTrigger>
-        <TabsTrigger
-          value="versions"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-600"
-        >
+        <TabsTrigger value="versions" className="rounded-md">
           Versions
         </TabsTrigger>
-        <TabsTrigger
-          value="license"
-          className="rounded-none border-b-2 border-transparent data-[state=active]:border-teal-600"
-        >
+        <TabsTrigger value="license" className="rounded-md">
           License
         </TabsTrigger>
       </TabsList>

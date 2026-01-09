@@ -43,7 +43,7 @@ export default function Home() {
               <Shield className="h-16 w-16 text-primary" />
             </div>
           </div>
-          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 text-teal-600">
             Security Dashboard
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -55,7 +55,7 @@ export default function Home() {
         {/* Search Section */}
         <Card className="max-w-3xl mx-auto mb-16">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-teal-600">
               <Search className="h-5 w-5" />
               Analyze a Package
             </CardTitle>
@@ -101,7 +101,11 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <Button type="submit" className="w-full" size="lg">
+              <Button
+                type="submit"
+                className="w-full bg-teal-600 hover:bg-teal-700 duration-200"
+                size="lg"
+              >
                 <Search className="mr-2 h-4 w-4" />
                 Analyze Package
               </Button>
@@ -113,8 +117,8 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2 text-primary">
-                <AlertTriangle className="h-5 w-5" />
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5 text-teal-600" />
                 <CardTitle className="text-lg">Vulnerabilities</CardTitle>
               </div>
             </CardHeader>
@@ -128,8 +132,8 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2 text-primary">
-                <Shield className="h-5 w-5" />
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-teal-600" />
                 <CardTitle className="text-lg">Malware Detection</CardTitle>
               </div>
             </CardHeader>
@@ -143,8 +147,8 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-2 text-primary">
-                <Package className="h-5 w-5" />
+              <div className="flex items-center gap-2">
+                <Package className="h-5 w-5 text-teal-600" />
                 <CardTitle className="text-lg">Scorecard Analysis</CardTitle>
               </div>
             </CardHeader>

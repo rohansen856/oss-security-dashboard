@@ -25,9 +25,7 @@ function StatCard({ icon, label, value, highlight }: StatCardProps) {
     >
       <div className="mb-3 flex items-center gap-2 text-slate-500">
         {icon}
-        <span className="text-xs font-medium uppercase tracking-wide">
-          {label}
-        </span>
+        <span className="text-sm font-medium tracking-wide">{label}</span>
       </div>
       <div
         className={`text-3xl font-bold ${
@@ -48,30 +46,32 @@ export default function StatsCards({
   ecosystem,
 }: StatsProps) {
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-5 gap-3">
       <StatCard
-        icon={<Package className="h-4 w-4" />}
+        icon={<Package className="size-6 border rounded p-1 text-teal-600" />}
         label="Version"
         value={version}
       />
       <StatCard
-        icon={<AlertTriangle className="h-4 w-4 text-red-500" />}
+        icon={
+          <AlertTriangle className="size-6 border rounded p-1 text-red-500" />
+        }
         label="Vulnerabilities"
         value={vulnerabilities}
       />
       <StatCard
-        icon={<Shield className="h-4 w-4 text-teal-600" />}
+        icon={<Shield className="size-6 border rounded p-1 text-teal-600" />}
         label="OpenSSF Scorecard"
         value={`${scorecard.toFixed(1)}/10`}
         highlight={true}
       />
       <StatCard
-        icon={<Scale className="h-4 w-4" />}
+        icon={<Scale className="size-6 border rounded p-1 text-teal-600" />}
         label="License"
         value={license}
       />
       <StatCard
-        icon={<Zap className="h-4 w-4" />}
+        icon={<Zap className="size-6 border rounded p-1 text-teal-600" />}
         label="Ecosystem"
         value={ecosystem}
       />

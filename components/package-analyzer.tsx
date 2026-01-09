@@ -238,7 +238,9 @@ export default function PackageAnalyzer({
                 height={24}
                 className="h-6 w-auto"
               />
-              <p className="text-md md:text-lg xl:text-xl font-semibold">Safedep</p>
+              <p className="text-md md:text-lg xl:text-xl font-semibold">
+                Safedep
+              </p>
             </div>
           </Link>
           <Button

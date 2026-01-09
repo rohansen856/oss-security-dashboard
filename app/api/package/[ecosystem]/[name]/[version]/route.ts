@@ -77,19 +77,20 @@ export async function GET(
     params,
   }: { params: Promise<{ ecosystem: string; name: string; version: string }> }
 ) {
+  // Extract params outside try block so they're available in catch
+  const { ecosystem, name, version } = await params
+
+  if (!ecosystem || !name || !version) {
+    return NextResponse.json(
+      {
+        error:
+          "Missing required parameters: ecosystem, name, and version are required",
+      },
+      { status: 400 }
+    )
+  }
+
   try {
-    const { ecosystem, name, version } = await params
-
-    if (!ecosystem || !name || !version) {
-      return NextResponse.json(
-        {
-          error:
-            "Missing required parameters: ecosystem, name, and version are required",
-        },
-        { status: 400 }
-      )
-    }
-
     // Check if client is available
     if (!client) {
       return NextResponse.json(
@@ -126,6 +127,37 @@ export async function GET(
     // Convert protobuf response to JSON
     const insightsJson = response.toJson() as any
 
+    // Check if we got meaningful data back
+    // If the package doesn't exist, SafeDep returns an empty "insight" object
+    if (
+      !insightsJson ||
+      !insightsJson.insight ||
+      Object.keys(insightsJson.insight).length === 0
+    ) {
+      return NextResponse.json(
+        {
+          error: `Package not found: ${name}@${version} in ${ecosystem} ecosystem`,
+          details:
+            "This package does not exist or has not been analyzed by SafeDep. Please verify the package name, version, and ecosystem.",
+        },
+        { status: 404 }
+      )
+    }
+
+    const insight = insightsJson.insight
+
+    // Extract scorecard from projectInsights
+    const scorecard =
+      insight.projectInsights && insight.projectInsights.length > 0
+        ? insight.projectInsights[0].scorecard || {}
+        : {}
+
+    // Extract licenses
+    const licenses =
+      insight.licenses && insight.licenses.licenses
+        ? insight.licenses.licenses
+        : []
+
     // Transform the response to match our expected format
     const packageData: PackageData = {
       ecosystem,
@@ -137,15 +169,50 @@ export async function GET(
           name,
           version,
         },
-        vulnerabilities: insightsJson.vulnerabilities || [],
-        scorecard: insightsJson.scorecard || {},
-        licenses: insightsJson.licenses || [],
+        vulnerabilities: insight.vulnerabilities || [],
+        scorecard: scorecard,
+        licenses: licenses,
+        availableVersions: insight.availableVersions || [],
+        metadata: {
+          analyzed_at: insight.packagePublishedAt || "",
+          source_url:
+            insight.projectInsights && insight.projectInsights.length > 0
+              ? insight.projectInsights[0].project?.url || ""
+              : "",
+          sha256: "",
+        },
       },
     }
 
-    return NextResponse.json(packageData)
-  } catch (error) {
+    return NextResponse.json(packageData, { status: 200 })
+  } catch (error: any) {
     console.error("API route error:", error)
+
+    // Check if it's a ConnectError with specific error codes
+    if (error?.code === 5) {
+      // NOT_FOUND error from gRPC
+      return NextResponse.json(
+        {
+          error: `Package not found: ${name}@${version} in ${ecosystem} ecosystem`,
+          details:
+            "This package does not exist or has not been analyzed by SafeDep. Please verify the package name, version, and ecosystem.",
+        },
+        { status: 404 }
+      )
+    }
+
+    if (error?.code === 14) {
+      // UNAVAILABLE error from gRPC (network issues)
+      return NextResponse.json(
+        {
+          error: "SafeDep API is temporarily unavailable",
+          details: "Unable to connect to SafeDep API. Please try again later.",
+        },
+        { status: 503 }
+      )
+    }
+
+    // Generic error
     return NextResponse.json(
       {
         error: "Failed to fetch package data from SafeDep API",

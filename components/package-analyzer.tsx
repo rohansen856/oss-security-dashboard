@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Github, AlertCircle } from "lucide-react"
+import { Github, AlertCircle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useRouter } from "next/navigation"
 import PackageHeader from "@/components/package-header"
 import StatsCards from "@/components/stats-cards"
 import ContentTabs from "@/components/content-tabs"
@@ -20,16 +21,19 @@ export default function PackageAnalyzer({
   name,
   version,
 }: PackageAnalyzerProps) {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
   const [packageData, setPackageData] = useState<PackageData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [errorDetails, setErrorDetails] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchPackageData() {
       try {
         setLoading(true)
         setError(null)
+        setErrorDetails(null)
 
         const response = await fetch(
           `/api/package/${ecosystem}/${encodeURIComponent(name)}/${version}`
@@ -37,7 +41,9 @@ export default function PackageAnalyzer({
 
         if (!response.ok) {
           const errorData = await response.json()
-          throw new Error(errorData.error || "Failed to fetch package data")
+          setError(errorData.error || "Failed to fetch package data")
+          setErrorDetails(errorData.details || null)
+          return
         }
 
         const data: PackageData = await response.json()
@@ -57,7 +63,7 @@ export default function PackageAnalyzer({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-100">
+      <div className="min-h-screen">
         <div className="px-6 py-4">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-2">
@@ -89,8 +95,8 @@ export default function PackageAnalyzer({
 
   if (error || !packageData) {
     return (
-      <div className="min-h-screen bg-slate-100">
-        <div className="px-6 py-4">
+      <div className="min-h-screen bg-slate-50">
+        <div className="px-6 py-4 bg-white border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-teal-600">
@@ -109,16 +115,63 @@ export default function PackageAnalyzer({
             </Button>
           </div>
         </div>
-        <div className="px-6 py-8">
-          <div className="mx-auto max-w-6xl">
-            <Alert variant="destructive">
+        <div className="px-6 py-12">
+          <div className="mx-auto max-w-3xl">
+            <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                {error ||
+              <AlertTitle className="text-lg font-semibold">
+                {error || "Package Not Found"}
+              </AlertTitle>
+              <AlertDescription className="mt-2 text-base">
+                {errorDetails ||
                   "Failed to load package data. Please try again later."}
               </AlertDescription>
             </Alert>
+
+            <div className="bg-white rounded-lg border p-6 space-y-4">
+              <h3 className="font-semibold text-lg">What you searched for:</h3>
+              <div className="bg-slate-50 rounded p-4 font-mono text-sm">
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <span className="text-slate-500">Ecosystem:</span>
+                    <div className="font-semibold mt-1">{ecosystem}</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Package:</span>
+                    <div className="font-semibold mt-1">{name}</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Version:</span>
+                    <div className="font-semibold mt-1">{version}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <h4 className="font-semibold mb-3">Suggestions:</h4>
+                <ul className="list-disc list-inside space-y-2 text-sm text-slate-600">
+                  <li>Verify the package name is spelled correctly</li>
+                  <li>
+                    Check if the version exists in the {ecosystem} registry
+                  </li>
+                  <li>Ensure you selected the correct ecosystem</li>
+                  <li>Try a different version of the package</li>
+                </ul>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <Button onClick={() => router.push("/")} className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Search
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.reload()}
+                >
+                  Try Again
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -11,7 +11,11 @@ interface PageProps {
 export default async function PackagePage({ params }: PageProps) {
   const { ecosystem, name, version } = await params
 
-  return <PackageAnalyzer ecosystem={ecosystem} name={name} version={version} />
+  return (
+    <main className="min-h-[105vh] bg-slate-100">
+      <PackageAnalyzer ecosystem={ecosystem} name={name} version={version} />
+    </main>
+  )
 }
 
 // Generate metadata for the page

@@ -88,7 +88,7 @@ export default function OverviewTab({ packageData }: OverviewTabProps) {
             Scorecard Checks
           </h2>
           <div className="space-y-3">
-            {scorecardChecks.slice(0, 5).map((check, index) => (
+            {scorecardChecks.map((check, index) => (
               <div key={index} className="rounded-md bg-slate-50 p-3">
                 <div className="mb-1 flex items-center justify-between">
                   <p className="text-sm font-medium text-slate-900">

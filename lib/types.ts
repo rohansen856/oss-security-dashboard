@@ -28,6 +28,10 @@ export interface InsightsResponse {
     fixed_version?: string
     published_at?: string
   }>
+  availableVersions?: Array<{
+    version?: string
+    publishedAt?: string
+  }>
   metadata?: {
     analyzed_at?: string
     source_url?: string

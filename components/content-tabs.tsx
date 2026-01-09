@@ -57,7 +57,7 @@ export default function ContentTabs({
           />
         </TabsContent>
         <TabsContent value="versions" className="m-0">
-          <VersionsTab />
+          <VersionsTab packageData={packageData} />
         </TabsContent>
         <TabsContent value="license" className="m-0">
           <LicenseTab licenses={packageData.insights?.licenses || []} />

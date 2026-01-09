@@ -5,6 +5,8 @@ import { Github, AlertCircle, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
 import PackageHeader from "@/components/package-header"
 import StatsCards from "@/components/stats-cards"
 import ContentTabs from "@/components/content-tabs"
@@ -64,16 +66,25 @@ export default function PackageAnalyzer({
   if (loading) {
     return (
       <div className="min-h-screen">
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 bg-white border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-teal-600">
-                <span className="text-sm font-bold text-white">S</span>
-              </div>
-              <span className="text-sm font-semibold text-slate-700">
-                SafeDep
+            <Link href="/" className="flex flex-col gap-1 cursor-pointer">
+              <span className="text-[10px] font-medium text-slate-500 tracking-wider">
+                POWERED BY
               </span>
-            </div>
+              <div className="flex gap-2">
+                <Image
+                  src="/icon.png"
+                  alt="SafeDep"
+                  width={100}
+                  height={24}
+                  className="h-6 w-auto"
+                />
+                <p className="text-md md:text-lg xl:text-xl font-semibold">
+                  Safedep
+                </p>
+              </div>
+            </Link>
             <Button
               variant="default"
               className="gap-2 bg-teal-600 hover:bg-teal-700"
@@ -98,14 +109,23 @@ export default function PackageAnalyzer({
       <div className="min-h-screen bg-slate-50">
         <div className="px-6 py-4 bg-white border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-teal-600">
-                <span className="text-sm font-bold text-white">S</span>
-              </div>
-              <span className="text-sm font-semibold text-slate-700">
-                SafeDep
+            <Link href="/" className="flex flex-col gap-1 cursor-pointer">
+              <span className="text-[10px] font-medium text-slate-500 tracking-wider">
+                POWERED BY
               </span>
-            </div>
+              <div className="flex gap-2">
+                <Image
+                  src="/icon.png"
+                  alt="SafeDep"
+                  width={100}
+                  height={24}
+                  className="h-6 w-auto"
+                />
+                <p className="text-md md:text-lg xl:text-xl font-semibold">
+                  Safedep
+                </p>
+              </div>
+            </Link>
             <Button
               variant="default"
               className="gap-2 bg-teal-600 hover:bg-teal-700"
@@ -204,16 +224,23 @@ export default function PackageAnalyzer({
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Header with Logo and CTA */}
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 bg-white border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-teal-600">
-              <span className="text-sm font-bold text-white">S</span>
-            </div>
-            <span className="text-sm font-semibold text-slate-700">
-              SafeDep
+          <Link href="/" className="flex flex-col gap-1 cursor-pointer">
+            <span className="text-[10px] font-medium text-slate-500 tracking-wider">
+              POWERED BY
             </span>
-          </div>
+            <div className="flex gap-2">
+              <Image
+                src="/icon.png"
+                alt="SafeDep"
+                width={100}
+                height={24}
+                className="h-6 w-auto"
+              />
+              <p className="text-md md:text-lg xl:text-xl font-semibold">Safedep</p>
+            </div>
+          </Link>
           <Button
             variant="default"
             className="gap-2 bg-teal-600 hover:bg-teal-700"

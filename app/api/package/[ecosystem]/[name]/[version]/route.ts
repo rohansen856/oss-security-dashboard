@@ -10,6 +10,7 @@ import { InsightService } from "@buf/safedep_api.connectrpc_es/safedep/services/
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb.js"
 import * as https from "https"
 import * as dns from "dns"
+import { getCachedData, setCachedData } from "@/lib/redis"
 
 // Force Node.js runtime (required for gRPC/ConnectRPC)
 export const runtime = "nodejs"
@@ -23,7 +24,7 @@ const SAFEDEP_TENANT_ID = process.env.SAFEDEP_TENANT_ID
 
 if (!SAFEDEP_API_KEY || !SAFEDEP_TENANT_ID) {
   console.error(
-    "⚠️  Missing SafeDep API credentials. Set SAFEDEP_API_KEY and SAFEDEP_TENANT_ID in .env"
+    "Missing SafeDep API credentials. Set SAFEDEP_API_KEY and SAFEDEP_TENANT_ID in .env"
   )
 }
 
@@ -90,7 +91,24 @@ export async function GET(
     )
   }
 
+  // Create cache key
+  const cacheKey = `package:${ecosystem}:${name}:${version}`
+
   try {
+    // Try to get from cache first
+    const cachedData = await getCachedData<PackageData>(cacheKey)
+    if (cachedData) {
+      return NextResponse.json(
+        { ...cachedData, cached: true },
+        {
+          status: 200,
+          headers: {
+            "X-Cache": "HIT",
+          },
+        }
+      )
+    }
+
     // Check if client is available
     if (!client) {
       return NextResponse.json(
@@ -184,7 +202,18 @@ export async function GET(
       },
     }
 
-    return NextResponse.json(packageData, { status: 200 })
+    // Cache the result for 1 hour (3600 seconds)
+    await setCachedData(cacheKey, packageData, 3600)
+
+    return NextResponse.json(
+      { ...packageData, cached: false },
+      {
+        status: 200,
+        headers: {
+          "X-Cache": "MISS",
+        },
+      }
+    )
   } catch (error: any) {
     console.error("API route error:", error)
 

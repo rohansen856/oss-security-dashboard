@@ -44,8 +44,8 @@ vet cloud quickstart
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
-cd security-dashboard-ui
+git clone https://github.com/rohansen856/oss-security-dashboard
+cd oss-security-dashboard
 ```
 
 2. Install dependencies:
@@ -98,31 +98,6 @@ Examples:
 - `http://localhost:3000/p/pypi/requests/2.31.0`
 - `http://localhost:3000/p/maven/com.fasterxml.jackson.core:jackson-databind/2.15.0`
 
-## Project Structure
-
-```
-├── app/
-│   ├── api/package/[ecosystem]/[name]/[version]/  # API routes (protects API keys)
-│   ├── p/[ecosystem]/[name]/[version]/            # Dynamic package pages
-│   ├── layout.tsx                                  # Root layout
-│   └── page.tsx                                    # Homepage with search
-├── components/
-│   ├── package-analyzer.tsx                        # Main analysis component
-│   ├── package-header.tsx                          # Package metadata display
-│   ├── stats-cards.tsx                             # Statistics cards
-│   ├── content-tabs.tsx                            # Tab navigation
-│   ├── tabs/                                       # Individual tab components
-│   │   ├── overview-tab.tsx
-│   │   ├── vulnerabilities-tab.tsx
-│   │   ├── license-tab.tsx
-│   │   └── versions-tab.tsx
-│   └── ui/                                         # shadcn/ui components
-├── lib/
-│   ├── types.ts                                    # TypeScript type definitions
-│   └── utils.ts                                    # Utility functions
-└── .env                                            # Environment variables (not in git)
-```
-
 ## API Integration
 
 This application uses Next.js API routes to securely proxy requests to the SafeDep API. The API key is never exposed to the client.
@@ -139,22 +114,6 @@ The API route handles:
 4. Structured response formatting
 
 ## Important Notes
-
-### SafeDep API
-
-The SafeDep API uses **gRPC** protocol. This project currently attempts to use REST-style HTTP requests, which may not work depending on your API access level.
-
-For production use with gRPC:
-
-1. Install gRPC dependencies:
-
-```bash
-npm install @connectrpc/connect-node @bufbuild/protobuf
-```
-
-2. Use the gRPC client as shown in [safedep/vetpkg.dev](https://github.com/safedep/vetpkg.dev)
-
-3. Update the API routes to use the gRPC transport
 
 ### Data Availability
 
@@ -221,4 +180,4 @@ For issues with:
 
 ## License
 
-Apache-2.0 (or as specified in your repository)
+MIT
